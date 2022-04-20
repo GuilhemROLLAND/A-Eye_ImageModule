@@ -2,10 +2,6 @@
 
 void encodageBMP(unsigned char* addr, int width, int height) {
     unsigned char *ptr_img = (unsigned char*) addr;
-    unsigned char *bmpImg;
-    if ((bmpImg = malloc(sizeof(BITMAPFILEHEADER)+ sizeof(BITMAPINFOHEADER) + (width*height*3) * sizeof(unsigned char))) == NULL)
-        printf("erreur allocation mémoire\n");
-    // initialisation du pointeur mémoire a l'adresse de démarrage
     BITMAPFILEHEADER* fileheader;
     if ((fileheader = malloc(sizeof(BITMAPFILEHEADER))) == NULL)
         printf("erreur allocation mémoire \n");
@@ -19,25 +15,25 @@ void encodageBMP(unsigned char* addr, int width, int height) {
     int sizeOfFileHeader = 14;
     int sizeOfInfoHeader = 40;
 
-    fileheader->fType = (0x424d);
-    fileheader->fSize = bswap_32(( width * height * 3 ) + sizeOfInfoHeader + sizeOfFileHeader);
-    fileheader->fReserved1 = 0x00;
-    fileheader->fReserved2 = 0x00;
-    fileheader->fOffBits = bswap_32(sizeOfFileHeader + sizeOfInfoHeader); //bytes,  TO DO : convert to hex and little endian
+    fileheader->fType = (0x4d42);
+    fileheader->fSize = (( width * height * 3 ) + sizeOfInfoHeader + sizeOfFileHeader);
+    fileheader->fReserved1 = 0;
+    fileheader->fReserved2 = 0;
+    fileheader->fOffBits = (unsigned int) sizeOfFileHeader + sizeOfInfoHeader; 
 
     // Création de l'InfoHeader 
 
-    infoheader->size = bswap_32(0x7c000000);
-    infoheader->width = bswap_32((unsigned int) width);
-    infoheader->height = bswap_32((unsigned int) height);
-    infoheader->planes = bswap_16(0x0100);
-    infoheader->bitCount = bswap_16(0x2000); 
-    infoheader->compression = 0x00000000;
-    infoheader->sizeImage = bswap_32((unsigned int) width*height);
+    infoheader->size = 0x0000028;
+    infoheader->width = (unsigned int) width;
+    infoheader->height = (unsigned int) height;
+    infoheader->planes = 0x0001;
+    infoheader->bitCount = 0x0020; 
+    infoheader->compression = 0;
+    infoheader->sizeImage = 0;//(unsigned int) width*height*3
     infoheader->xPelsPerMeter = 0;
     infoheader->yPelsPerMeter = 0;
-    infoheader->clrUsed = bswap_32(0x01000000);
-    infoheader->clrImportant = 0x00000000;
+    infoheader->clrUsed = 0;
+    infoheader->clrImportant = 0;
 
     //Ecriture des données header dans un fichier
 
@@ -53,7 +49,7 @@ void encodageBMP(unsigned char* addr, int width, int height) {
         {
             fwrite((ptr_img+n), sizeof(unsigned char), 1, imageFile);
         }
-        n += 5;
+        n += 6;
     }
     fclose(imageFile);
 }
