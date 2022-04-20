@@ -1,4 +1,5 @@
 #include "preprocess.h"
+#include <byteswap.h>
 
 #ifndef _REMONTEIMG_H
 #define _REMONTEIMG_H
