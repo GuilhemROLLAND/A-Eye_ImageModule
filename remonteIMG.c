@@ -16,7 +16,7 @@ void encodageBMP(unsigned char* addr, int width, int height) {
     int sizeOfInfoHeader = 40;
 
     fileheader->fType = (0x4d42);
-    fileheader->fSize = (( width * height * 3 ) + sizeOfInfoHeader + sizeOfFileHeader);
+    fileheader->fSize = (( width * height * 3 ) + sizeOfInfoHeader + sizeOfFileHeader)-1;
     fileheader->fReserved1 = 0;
     fileheader->fReserved2 = 0;
     fileheader->fOffBits = (unsigned int) sizeOfFileHeader + sizeOfInfoHeader; 
@@ -27,11 +27,11 @@ void encodageBMP(unsigned char* addr, int width, int height) {
     infoheader->width = (unsigned int) width;
     infoheader->height = (unsigned int) height;
     infoheader->planes = 0x0001;
-    infoheader->bitCount = 0x0020; 
+    infoheader->bitCount = 0x0018; 
     infoheader->compression = 0;
     infoheader->sizeImage = 0;//(unsigned int) width*height*3
-    infoheader->xPelsPerMeter = 0;
-    infoheader->yPelsPerMeter = 0;
+    infoheader->xPelsPerMeter = 0x00000EC3;
+    infoheader->yPelsPerMeter = 0x00000EC3;
     infoheader->clrUsed = 0;
     infoheader->clrImportant = 0;
 
@@ -51,5 +51,12 @@ void encodageBMP(unsigned char* addr, int width, int height) {
         }
         n += 6;
     }
+    char *completion;
+    char a = 0;
+    completion = &a;
+    fwrite(completion, sizeof(char), 1, imageFile);
+    fwrite(completion, sizeof(char), 1, imageFile);
+    fwrite(completion, sizeof(char), 1, imageFile);
+
     fclose(imageFile);
 }
