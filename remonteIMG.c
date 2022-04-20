@@ -17,7 +17,7 @@ void encodageBMP(unsigned char* addr, int width, int height) {
     int sizeOfFileHeader = 14;
     int sizeOfInfoHeader = 40;
 
-    fileheader->fType = 0x424d;
+    fileheader->fType = 0x4D42;
     fileheader->fSize = ( width * height * 3 ) + sizeOfInfoHeader + sizeOfFileHeader; // bytes, to do: convert to hex and little endian
     fileheader->fReserved1 = 0x00;
     fileheader->fReserved2 = 0x00;
@@ -56,5 +56,3 @@ void encodageBMP(unsigned char* addr, int width, int height) {
     }
     fclose(imageFile);
 }
-
-int main() {}
