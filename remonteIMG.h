@@ -7,8 +7,9 @@
      * @brief Create a bmp file corresponding to the data stocked att addr
      * 
      * @param addr starting of the img data
-     * @param size of img (HEIGHT*WIDTH*3)
+     * @param width of img 
+     * @param height of img
      */
-    void encodageBMP(unsigned char* addr, int size);
+    void encodageBMP(unsigned char* addr, int width, int height);
 
 #endif

@@ -1,9 +1,9 @@
 #include "preprocess.h"
 
-void encodageBMP(unsigned char* addr, int width, int length) {
+void encodageBMP(unsigned char* addr, int width, int height) {
     unsigned char *ptr_img = (unsigned char*) addr;
-    if ((bmpImg = malloc(sizeof(BITMAPFILEHEADER)+ sizeof(BITMAPINFOHEADER) + size * sizeof(unsigned char))) == NULL)
-        printf("erreur allocation mémoire");
+    if ((bmpImg = malloc(sizeof(BITMAPFILEHEADER)+ sizeof(BITMAPINFOHEADER) + (width*height*3) * sizeof(unsigned char))) == NULL)
+        printf("erreur allocation mémoire\n");
     // initialisation du pointeur mémoire a l'adresse de démarrage
     BITMAPFILEHEADER* fileheader;
     if ((fileheader = malloc(sizeof(BITMAPFILEHEADER))) == NULL)
@@ -13,22 +13,24 @@ void encodageBMP(unsigned char* addr, int width, int length) {
         printf("erreur allocation mémoire \n");
     
     // Création du FileHeader 
+    int sizeOfFileHeader = 14;
+    int sizeOfInfoHeader = 40;
 
     fileheader->fType = 0x424d;
-    fileheader->fSize = NULL; // TO DO : calculer la taille d'une image standard 640*480
+    fileheader->fSize = ( width * height * 3 ) + sizeOfInfoHeader + sizeOfFileHeader; // bytes, to do: convert to hex and little endian
     fileheader->fReserved1 = 0x00;
     fileheader->fReserved2 = 0x00;
-    fileheader->fOffBits = NULL; // TO DO : specifier offset pour image standard
+    fileheader->fOffBits = sizeOfFileHeader + sizeOfInfoHeader; //bytes,  TO DO : convert to hex and little endian
 
     // Création de l'InfoHeader 
 
     infoheader->size = 0x7c000000;
-    infoheader->width = 0x80020000;
-    infoheader->height = 0xe0010000;
+    infoheader->width = (unsigned int) width;
+    infoheader->height = (unsigned int) height;
     infoheader->planes = 0x0100;
     infoheader->bitCount = 0x2000; 
     infoheader->compression = 0x00000000;
-    infoheader->sizeImage = 0x000E1000;
+    infoheader->sizeImage = (unsigned int) width*height;
     infoheader->xPelsPerMeter = NULL;
     infoheader->yPelsPerMeter = NULL;
     infoheader->clrUsed = 0x01000000;
@@ -43,7 +45,7 @@ void encodageBMP(unsigned char* addr, int width, int length) {
     //Ecriture des données de l'image dans le fichier avec inversion des couleurs
 
     int n = 0;
-    for (int i = 0; i < 640*480; i++)
+    for (int i = 0; i < width*height; i++)
     { 
         for (n; n > ((i+1)*3)-2; n--)
         {
@@ -51,6 +53,5 @@ void encodageBMP(unsigned char* addr, int width, int length) {
             n += 3;
         }
     }
-
     fclose(imageFile);
 }
