@@ -1,7 +1,8 @@
-#include "preprocess.h"
+#include "remonteIMG.h"
 
 void encodageBMP(unsigned char* addr, int width, int height) {
     unsigned char *ptr_img = (unsigned char*) addr;
+    unsigned char *bmpImg;
     if ((bmpImg = malloc(sizeof(BITMAPFILEHEADER)+ sizeof(BITMAPINFOHEADER) + (width*height*3) * sizeof(unsigned char))) == NULL)
         printf("erreur allocation mémoire\n");
     // initialisation du pointeur mémoire a l'adresse de démarrage
@@ -31,14 +32,14 @@ void encodageBMP(unsigned char* addr, int width, int height) {
     infoheader->bitCount = 0x2000; 
     infoheader->compression = 0x00000000;
     infoheader->sizeImage = (unsigned int) width*height;
-    infoheader->xPelsPerMeter = NULL;
-    infoheader->yPelsPerMeter = NULL;
+    infoheader->xPelsPerMeter = 0;
+    infoheader->yPelsPerMeter = 0;
     infoheader->clrUsed = 0x01000000;
     infoheader->clrImportant = 0x00000000;
 
     //Ecriture des données header dans un fichier
 
-    FILE* imageFile = fopen('ImageBMP.bmp', "wb");
+    FILE* imageFile = fopen("ImageBMP.bmp", "wb");
     fwrite(fileheader, sizeof(BITMAPFILEHEADER), 1, imageFile);
     fwrite(infoheader, sizeof(BITMAPINFOHEADER), 1, imageFile);
 
@@ -49,9 +50,11 @@ void encodageBMP(unsigned char* addr, int width, int height) {
     { 
         for (n; n > ((i+1)*3)-2; n--)
         {
-            fwrite(*(ptr_img+n), sizeof(unsigned char), 1, imageFile);
+            fwrite((ptr_img+n), sizeof(unsigned char), 1, imageFile);
             n += 3;
         }
     }
     fclose(imageFile);
 }
+
+int main() {}
